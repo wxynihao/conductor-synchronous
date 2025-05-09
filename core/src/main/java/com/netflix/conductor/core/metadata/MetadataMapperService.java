@@ -12,8 +12,10 @@
  */
 package com.netflix.conductor.core.metadata;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -57,6 +59,22 @@ public class MetadataMapperService {
     }
 
     public WorkflowDef lookupForWorkflowDefinition(String name, Integer version) {
+        if (version == null) {
+            return getFromRedis(name, null);
+        }
+        if (System.currentTimeMillis() - lastUpdateTime > 300_000) {
+            workflowDefMap.clear();
+            lastUpdateTime = System.currentTimeMillis();
+        }
+        return workflowDefMap.computeIfAbsent(
+                name + ":" + version, __ -> getFromRedis(name, version));
+    }
+
+    private static final Map<String, WorkflowDef> workflowDefMap = new ConcurrentHashMap<>();
+
+    private static volatile long lastUpdateTime = 0;
+
+    public WorkflowDef getFromRedis(String name, Integer version) {
         Optional<WorkflowDef> potentialDef =
                 version == null
                         ? lookupLatestWorkflowDefinition(name)

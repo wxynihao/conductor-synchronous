@@ -13,10 +13,13 @@
 package com.netflix.conductor.core.execution;
 
 import java.util.List;
+import java.util.Map;
 
 import com.netflix.conductor.common.metadata.tasks.TaskResult;
 import com.netflix.conductor.common.metadata.workflow.RerunWorkflowRequest;
+import com.netflix.conductor.common.metadata.workflow.RunWorkflowRequest;
 import com.netflix.conductor.common.metadata.workflow.SkipTaskRequest;
+import com.netflix.conductor.common.metadata.workflow.WorkflowDef;
 import com.netflix.conductor.common.run.Workflow;
 import com.netflix.conductor.core.exception.ConflictException;
 import com.netflix.conductor.core.exception.NotFoundException;
@@ -159,4 +162,16 @@ public interface WorkflowExecutor {
      * @return id of the workflow
      */
     String startWorkflow(StartWorkflowInput input);
+
+    /**
+     * @param request Run a new workflow execution
+     * @return id of the workflow
+     */
+    Map<String, Object> runWorkflow(RunWorkflowRequest request);
+
+    /**
+     * @param request Run a new workflow execution
+     * @return WorkflowModel
+     */
+    WorkflowModel run(RunWorkflowRequest request, WorkflowDef workflowDefinition);
 }

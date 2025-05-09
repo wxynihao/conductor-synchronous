@@ -146,6 +146,6 @@ public class StartWorkflow extends WorkflowSystemTask {
 
     @Override
     public boolean isAsync() {
-        return true;
+        return false;
     }
 }

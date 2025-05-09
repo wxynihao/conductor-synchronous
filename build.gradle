@@ -2,10 +2,15 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 buildscript {
     repositories {
-        mavenCentral()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin/'}
+        maven { url 'https://maven.aliyun.com/repository/spring/'}
+        maven { url 'https://maven.aliyun.com/repository/google/'}
+        maven { url 'https://maven.aliyun.com/repository/spring-plugin/'}
+        maven { url 'https://maven.aliyun.com/repository/grails-core/'}
+        maven { url 'https://maven.aliyun.com/repository/apache-snapshots/'}
+        maven { url 'https://mirrors.huaweicloud.com/repository/maven/' }
+        gradlePluginPortal()
     }
     dependencies {
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:3.3.5'
@@ -67,6 +72,8 @@ allprojects {
     }
 
     repositories {
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin/'}
         mavenCentral()
     }
 
@@ -122,7 +129,8 @@ allprojects {
 }
 
 // all client and their related modules are published with Java 17 compatibility
-["annotations", "common", "client", "client-spring", "grpc", "grpc-client"].each {
+//["annotations", "common", "client", "client-spring", "grpc", "grpc-client"].each {
+["common"].each {
     project(":conductor-$it") {
         compileJava {
             options.release = 17
@@ -134,7 +142,7 @@ task server {
     dependsOn ':conductor-server:bootRun'
 }
 
-configure(allprojects - project(':conductor-grpc')) {
+configure(allprojects) {
     apply plugin: 'com.diffplug.spotless'
 
     spotless {
@@ -147,7 +155,8 @@ configure(allprojects - project(':conductor-grpc')) {
     }
 }
 
-['cassandra-persistence', 'core', 'redis-concurrency-limit', 'test-harness', 'client'].each {
+//['cassandra-persistence', 'core', 'redis-concurrency-limit', 'test-harness', 'client'].each {
+['core', 'redis-concurrency-limit'].each {
     configure(project(":conductor-$it")) {
         spotless {
             groovy {

@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.netflix.conductor.common.metadata.workflow.RunWorkflowRequest;
 import com.netflix.conductor.common.metadata.workflow.WorkflowDef;
 import com.netflix.conductor.core.exception.NonTransientException;
 import com.netflix.conductor.core.exception.TransientException;
@@ -47,6 +48,58 @@ public class SubWorkflow extends WorkflowSystemTask {
     @SuppressWarnings("unchecked")
     @Override
     public void start(WorkflowModel workflow, TaskModel task, WorkflowExecutor workflowExecutor) {
+        if (workflow.isOnlyRun()) {
+            run(workflow, task, workflowExecutor);
+        } else {
+            start1(workflow, task, workflowExecutor);
+        }
+    }
+
+    private void run(WorkflowModel workflow, TaskModel task, WorkflowExecutor workflowExecutor) {
+        Map<String, Object> input = task.getInputData();
+        String name = input.get("subWorkflowName").toString();
+        int version = (int) input.get("subWorkflowVersion");
+
+        var wfInput = (Map<String, Object>) input.get("workflowInput");
+        if (wfInput == null || wfInput.isEmpty()) {
+            wfInput = input;
+        }
+
+        try {
+            RunWorkflowRequest startWorkflowInput = new RunWorkflowRequest();
+            startWorkflowInput.setName(name);
+            startWorkflowInput.setVersion(version);
+            startWorkflowInput.setInput(wfInput);
+
+            WorkflowModel subWorkflow = workflowExecutor.run(startWorkflowInput, null);
+            String subWorkflowId = subWorkflow.getWorkflowId();
+
+            task.setSubWorkflowId(subWorkflowId);
+            // For backwards compatibility
+            task.addOutput(SUB_WORKFLOW_ID, subWorkflowId);
+
+            // Set task status based on current sub-workflow status, as the status can change in
+            // recursion by the time we update here.
+            updateTaskStatus(subWorkflow, task);
+        } catch (TransientException te) {
+            LOGGER.info(
+                    "A transient backend error happened when task {} in {} tried to run sub workflow {}.",
+                    task.getTaskId(),
+                    workflow.toShortString(),
+                    name);
+        } catch (Exception ae) {
+
+            task.setStatus(TaskModel.Status.FAILED);
+            task.setReasonForIncompletion(ae.getMessage());
+            LOGGER.error(
+                    "Error running sub workflow: {} from workflow: {}",
+                    name,
+                    workflow.toShortString(),
+                    ae);
+        }
+    }
+
+    private void start1(WorkflowModel workflow, TaskModel task, WorkflowExecutor workflowExecutor) {
         Map<String, Object> input = task.getInputData();
         String name = input.get("subWorkflowName").toString();
         int version = (int) input.get("subWorkflowVersion");

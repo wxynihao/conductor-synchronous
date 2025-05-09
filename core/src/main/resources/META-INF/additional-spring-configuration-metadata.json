@@ -124,6 +124,10 @@
         {
           "value": "stub",
           "description": "Use the no-op implementation of the workflow status listener."
+        },
+        {
+          "value": "cache",
+          "description": "将结果写入缓存."
         }
       ]
     },

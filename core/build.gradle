@@ -48,10 +48,15 @@ dependencies {
     implementation("org.graalvm.polyglot:python:24.1.0")
     implementation "org.graalvm.sdk:graal-sdk:24.1.0"
 
+    // groovy
+    implementation 'org.codehaus.groovy:groovy-all:3.0.24'
+
     // JAXB is not bundled with Java 11, dependencies added explicitly
     // These are needed by Apache BVAL
     implementation "jakarta.xml.bind:jakarta.xml.bind-api:${revJAXB}"
     implementation "jakarta.activation:jakarta.activation-api:${revActivation}"
+
+    implementation 'com.alibaba.fastjson2:fastjson2:2.0.57'
 
     // Only add it as a test dependency. The actual jaxb runtime provider is provided when building the server.
     testImplementation "org.glassfish.jaxb:jaxb-runtime:${revJAXB}"

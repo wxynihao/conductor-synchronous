@@ -53,6 +53,16 @@ public class WorkflowModel {
         }
     }
 
+    private boolean onlyRun = false;
+
+    public boolean isOnlyRun() {
+        return onlyRun;
+    }
+
+    public void setOnlyRun(boolean onlyRun) {
+        this.onlyRun = onlyRun;
+    }
+
     private Status status = Status.RUNNING;
 
     private long endTime;

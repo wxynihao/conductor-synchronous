@@ -57,6 +57,6 @@ public class Wait extends WorkflowSystemTask {
     }
 
     public boolean isAsync() {
-        return true;
+        return false;
     }
 }

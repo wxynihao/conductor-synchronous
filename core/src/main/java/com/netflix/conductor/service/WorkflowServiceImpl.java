@@ -21,10 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.netflix.conductor.annotations.Audit;
 import com.netflix.conductor.annotations.Trace;
-import com.netflix.conductor.common.metadata.workflow.RerunWorkflowRequest;
-import com.netflix.conductor.common.metadata.workflow.SkipTaskRequest;
-import com.netflix.conductor.common.metadata.workflow.StartWorkflowRequest;
-import com.netflix.conductor.common.metadata.workflow.WorkflowDef;
+import com.netflix.conductor.common.metadata.workflow.*;
 import com.netflix.conductor.common.run.ExternalStorageLocation;
 import com.netflix.conductor.common.run.SearchResult;
 import com.netflix.conductor.common.run.Workflow;
@@ -60,6 +57,11 @@ public class WorkflowServiceImpl implements WorkflowService {
      */
     public String startWorkflow(StartWorkflowRequest startWorkflowRequest) {
         return workflowExecutor.startWorkflow(new StartWorkflowInput(startWorkflowRequest));
+    }
+
+    @Override
+    public Map<String, Object> runWorkflow(RunWorkflowRequest request) {
+        return workflowExecutor.runWorkflow(request);
     }
 
     /**

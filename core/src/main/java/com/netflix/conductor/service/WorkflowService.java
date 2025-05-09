@@ -17,10 +17,7 @@ import java.util.Map;
 
 import org.springframework.validation.annotation.Validated;
 
-import com.netflix.conductor.common.metadata.workflow.RerunWorkflowRequest;
-import com.netflix.conductor.common.metadata.workflow.SkipTaskRequest;
-import com.netflix.conductor.common.metadata.workflow.StartWorkflowRequest;
-import com.netflix.conductor.common.metadata.workflow.WorkflowDef;
+import com.netflix.conductor.common.metadata.workflow.*;
 import com.netflix.conductor.common.run.ExternalStorageLocation;
 import com.netflix.conductor.common.run.SearchResult;
 import com.netflix.conductor.common.run.Workflow;
@@ -44,6 +41,16 @@ public interface WorkflowService {
     String startWorkflow(
             @NotNull(message = "StartWorkflowRequest cannot be null") @Valid
                     StartWorkflowRequest startWorkflowRequest);
+
+    /**
+     * run a new workflow with StartWorkflowRequest, which allows task to be executed in a domain.
+     *
+     * @param runWorkflowRequest runWorkflow request for the workflow you want to start.
+     * @return the output of the workflow instance
+     */
+    Map<String, Object> runWorkflow(
+            @NotNull(message = "StartWorkflowRequest cannot be null") @Valid
+                    RunWorkflowRequest runWorkflowRequest);
 
     /**
      * Start a new workflow. Returns the ID of the workflow instance that can be later used for

@@ -204,7 +204,7 @@ public class KafkaPublishTask extends WorkflowSystemTask {
 
     @Override
     public boolean isAsync() {
-        return true;
+        return false;
     }
 
     public static class Input {

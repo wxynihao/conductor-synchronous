@@ -16,18 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.netflix.conductor.common.metadata.workflow.RerunWorkflowRequest;
+import com.netflix.conductor.common.metadata.workflow.RunWorkflowRequest;
 import com.netflix.conductor.common.metadata.workflow.SkipTaskRequest;
 import com.netflix.conductor.common.metadata.workflow.StartWorkflowRequest;
 import com.netflix.conductor.common.run.*;
@@ -61,6 +53,14 @@ public class WorkflowResource {
                     "Start a new workflow with StartWorkflowRequest, which allows task to be executed in a domain")
     public String startWorkflow(@RequestBody StartWorkflowRequest request) {
         return workflowService.startWorkflow(request);
+    }
+
+    @PostMapping(value = "/run")
+    @Operation(
+            summary =
+                    "run a new workflow with StartWorkflowRequest, which allows task to be executed in a domain")
+    public Map<String, Object> runWorkflow(@RequestBody RunWorkflowRequest request) {
+        return workflowService.runWorkflow(request);
     }
 
     @PostMapping(value = "/{name}", produces = TEXT_PLAIN_VALUE)
