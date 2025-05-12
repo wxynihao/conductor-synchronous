@@ -8,7 +8,7 @@
 2. 编译，运行 `build.sh`
 3. 启动后端，运行 server 目录中的 Conductor 的 main 方法
 4. 启动前端
-   1. 进入 ui mul
+   1. 进入 ui 目录
    2. 运行 yarn install （首次运行需要先安装必要的包）
    3. 运行 yarn start 
 5. 定义规则，在页面的 Definitions 中定义工作流，可使用如下工作流测试
@@ -221,10 +221,7 @@ Conductor 更适合处理以下场景：
 - 问题2：工作流利的任务，会被根据类型拆分到不同的队列，由专门的定时任务拉取并执行
   - 在工作流包含的任务数较多时，等待耗时非常可观，最简单的任务，最终耗时都在秒级
 
-
-
-[Conductor UI - Execution - aabfe4a6-d3af-4d00-9dd7-acf77930785a](https://cvg.t.17usoft.com/conductorfront/execution/aabfe4a6-d3af-4d00-9dd7-acf77930785a)
-
+    
 ![image-20250418163801234](算法工程化平台的设计与实现.assets/image-20250418163801234.png)
 
 - 任务之间都存在等待耗时
@@ -260,12 +257,17 @@ Conductor 更适合处理以下场景：
 
 当前非调试请求已可以做到执行期间完全不访问外部存储
 
-- 增加工作流缓存
+# 新增任务模块
 
-```json
-  "cacheConfig": {
-    "ttlInSecond": 60,
-    "key": "city:${cityId}"
-  }
-```
+1. 新增任务名定义
+    - common:TaskType，枚举与字符串
+2. 新增任务初始化实现
+    - core:TaskMapper，实现该接口
+        - 复制
+        - 修改getTaskType方法
+3. 新增任务逻辑实现
+    - 新增模块:WorkflowSystemTask，继承改类
+4. 添加编译
+    - settings.gradle `include 'xxx-task'`
+    - server:build.gradle `implementation project(':conductor-xxx-task')`
 
