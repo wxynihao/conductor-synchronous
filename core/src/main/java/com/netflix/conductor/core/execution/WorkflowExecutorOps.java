@@ -88,7 +88,6 @@ public class WorkflowExecutorOps implements WorkflowExecutor {
     private long activeWorkerLastPollMs;
     private final ExecutionLockService executionLockService;
     private static SpelExpressionParser spelExpressionParser;
-    private final CacheDAO cacheDAO;
 
     private final Predicate<PollData> validateLastPolledTime =
             pollData ->
@@ -107,8 +106,7 @@ public class WorkflowExecutorOps implements WorkflowExecutor {
             ExecutionLockService executionLockService,
             SystemTaskRegistry systemTaskRegistry,
             ParametersUtils parametersUtils,
-            IDGenerator idGenerator,
-            CacheDAO cacheDAO) {
+            IDGenerator idGenerator) {
         this.deciderService = deciderService;
         this.metadataDAO = metadataDAO;
         this.queueDAO = queueDAO;
@@ -122,7 +120,6 @@ public class WorkflowExecutorOps implements WorkflowExecutor {
         this.parametersUtils = parametersUtils;
         this.idGenerator = idGenerator;
         this.systemTaskRegistry = systemTaskRegistry;
-        this.cacheDAO = cacheDAO;
         spelExpressionParser = new SpelExpressionParser();
     }
 
