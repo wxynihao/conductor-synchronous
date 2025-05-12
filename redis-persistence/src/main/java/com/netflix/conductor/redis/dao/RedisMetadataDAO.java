@@ -109,6 +109,11 @@ public class RedisMetadataDAO extends BaseDynoDAO implements MetadataDAO {
 
     @Override
     public TaskDef getTaskDef(String name) {
+        // TODO wxy 禁用任务定义
+        if (true) {
+            return null;
+        }
+
         return Optional.ofNullable(taskDefCache.get(name)).orElseGet(() -> getTaskDefFromDB(name));
     }
 
